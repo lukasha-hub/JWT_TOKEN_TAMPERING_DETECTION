@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JWT Demo</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Student Info Section -->
+    <div class="student-info">
+      <p><strong>Student 1:</strong> Alok Singh - USN CS22097</p>
+      <p><strong>Student 2:</strong> Lukasha Bagde - USN CS22109</p>
+    </div>
+
+    <h2>🔐 JWT Login</h2>
+    <input id="username" placeholder="Enter username" />
+    <input id="password" type="password" placeholder="Enter password" />
+    <button onclick="login()">Login</button>
+
+    <h3>Generated Token</h3>
+    <textarea id="token" rows="5"></textarea>
+
+    <button onclick="verifyToken()">Verify Token & Access Welcome Page</button>
+  </div>
+
+  <script>
+    async function login() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      if (!username || !password) return alert("Enter username and password!");
+
+      const res = await fetch("http://localhost:5000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
+
+      const data = await res.json();
+
+      if (data.token) {
+        document.getElementById("token").value = data.token;
+        alert("Login successful! Token generated below. You can edit it to test tampering.");
+      } else {
+        alert("Login failed!");
+      }
+    }
+
+    async function verifyToken() {
+      const token = document.getElementById("token").value;
+      if (!token) return alert("No token to verify!");
+
+      const res = await fetch("http://localhost:5000/welcome", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token })
+      });
+
+      const data = await res.json();
+
+      if (res.status === 200) {
+        // Token valid → redirect to welcome page
+        window.location.href = `welcome.html?username=${encodeURIComponent(data.username)}`;
+      } else {
+        // Token invalid → alert
+        alert(data.error || "Invalid token!");
+      }
+    }
+  </script>
+</body>
+</html>

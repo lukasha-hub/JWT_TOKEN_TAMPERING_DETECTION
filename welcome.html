@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome Page</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h2>🎉 Welcome Page</h2>
+    <p id="welcome-msg"></p>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const username = params.get("username");
+    if (username) {
+      document.getElementById("welcome-msg").innerText = `Welcome, ${username}! You successfully verified your token.`;
+    } else {
+      document.getElementById("welcome-msg").innerText = "No username found!";
+    }
+  </script>
+</body>
+</html>
